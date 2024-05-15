@@ -15,6 +15,27 @@ class Cart extends Migration
                 'unsigned' => true,
                 'auto_increment' => true,
             ],
+            'user_id' =>[
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true,
+            ],
+            'product_id' =>[
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true,
+            ],
+            'quantidade' =>[
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true,
+            ],
+            'valor' =>[
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true,
+            ],
+
 
         ]);
         $this->forge->addKey('id', true);

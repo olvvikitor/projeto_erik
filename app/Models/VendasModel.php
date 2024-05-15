@@ -13,7 +13,7 @@ class VendasModel extends Model
     protected $returnType       = 'object';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['user_id', 'product_id', 'quantidade', 'valor'];
+    protected $allowedFields    = ['user_id', 'quantidade', 'valor', 'created_at', 'updated_at'];
 
     // Dates
     protected $useTimestamps = true;
@@ -43,8 +43,5 @@ class VendasModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-    public function carrinho()
-    {
-        return $this->belongsTo(CartModel::class, 'cart_id', 'id');
-    }
+
 }

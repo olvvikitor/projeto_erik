@@ -31,12 +31,9 @@ class Cart extends BaseController
             $total_carrinho += $item['subtotal'];
         }
     }
-        
+        session()->set('total_carrinho', $total_carrinho);
         // Define o total do carrinho na variável $data
         $data['total_carrinho'] = $total_carrinho;
-
-        session()->set('total_carrinho', $data['total_carrinho']);
-    
         // Retorna a view com os dados
         return view('dashboard/cart/index', $data);
     }
@@ -55,58 +52,60 @@ class Cart extends BaseController
         return view('dashboard/cart/add_to_cart', $data);
     }
     public function add_submit()
-{
-    $session = session();
-
-    // Recupera os dados enviados pelo formulário
-    $product_ids = $this->request->getPost('product_id');
-    $quantities = $this->request->getPost('quantity');
-    $names = $this->request->getPost('name');
-    $price = $this->request->getPost('price');
-
-    // Verifica se já existe um carrinho na sessão
-    $cart = $session->get('cart') ?? [];
-
-    $item = [
-        'product_id' => $product_ids,
-        'quantity' => intval($quantities),
-        'name' => $names,
-        'price' => floatval($price)
-    ];
-
-    // Calcula o subtotal do item (quantidade * preço)
-    $item['subtotal'] = $item['quantity'] * $item['price'];
-
-    // Adiciona o item ao carrinho
-    $cart[] = $item;
-
-    $session->set('cart', $cart);
-
-    return redirect()->to(base_url('cart'));
-}
+    {
+        $session = session();
+    
+      
+        $product_ids = $this->request->getPost('product_id');
+        $quantities = $this->request->getPost('quantity');
+        $names = $this->request->getPost('name');
+        $price = $this->request->getPost('price');
+        // Verifica se já existe um carrinho na sessão
+        $cart = $session->get('cart') ?? [];
+    
+        $item = [
+            'product_id' => $product_ids,
+            'quantity' => intval($quantities),
+            'name' => $names,
+            'price' => floatval($price)
+        ];
+    
+   
+        $item['subtotal'] = $item['quantity'] * $item['price'];
+    
+        $cart[] = $item;
+    
+        $session->set('cart', $cart);
+    
+        return redirect()->to(base_url('cart'));
+    }
 public function limpar()
 {
     // Recupera os dados da sessão cart
     $cart = session()->get('cart');
     $total = session()->get('total_carrinho');
     $user_id = session()->user['id'];
-    
-    // Verifica se existe algo no carrinho
+
+
     if ($cart) {
         // Carrega o model de Vendas
         $vendasModel = new VendasModel();
 
         // Itera sobre os itens do carrinho e insere na tabela vendas
         foreach ($cart as $item) {
-            $vendaData = [
-                'user_id'    => $user_id,
-                'product_id' => $item['product_id'],
-                'quantidade' => $item['quantity'],
-                'valor'      => $item['subtotal'], // Alterado para usar o subtotal do item
-                'created_at' => date('Y-m-d H:i:s'),
-            ];
-            
-            $vendasModel->insert($vendaData);
+            // Verifica se os dados do item do carrinho são válidos
+            if (!empty($item['product_id']) && $item['quantity'] > 0 && $item['subtotal'] > 0) {
+                $vendaData = [
+                    'user_id'    => $user_id,
+                    'quantidade' => $item['quantity'],
+                    'valor'      => $total,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
+    
+                ];
+               
+                $vendasModel->insert($vendaData);
+            }
         }
     }
 

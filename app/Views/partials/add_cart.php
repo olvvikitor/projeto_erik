@@ -44,31 +44,10 @@ User
                 <input type="hidden" name="name" value="<?= $product->name?>">
                 <input type="hidden" name="price" value="<?=calculate_promotion( $product->price, $product->promotion)?>">
               </div>
-              <button onclick="enviarCarrinhoParaServidor()" class="btn btn-sm btn-outline-success mx-1" style="font-size: small"><i class="fas fa-edit edit-icon"></i>Adicionar ao carrinho</button>
+              <button type="submit" class="btn btn-sm btn-outline-success mx-1" style="font-size: small"><i class="fas fa-edit edit-icon"></i>Adicionar ao carrinho</button>
             <?= form_close() ?>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <script>
-  // Função para enviar os dados do carrinho para o servidor
-  function enviarCarrinhoParaServidor() {
-    var produtos = JSON.parse(localStorage.getItem('produtos')) || [];
-    
-    // Envia os dados do carrinho para o servidor usando AJAX
-    $.ajax({
-      type: "POST",
-      url: "<?php echo site_url('cart/add_submit'); ?>",
-      data: { produtos: produtos },
-      success: function(response) {
-        // Trate a resposta do servidor, se necessário
-        console.log("Dados do carrinho enviados com sucesso para o servidor.");
-      },
-      error: function(xhr, status, error) {
-        // Trate erros de requisição, se necessário
-        console.error("Erro ao enviar dados do carrinho para o servidor: " + error);
-      }
-    });
-  }
-</script>

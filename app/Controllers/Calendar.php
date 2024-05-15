@@ -16,29 +16,23 @@ class Calendar extends BaseController
             'page' => 'Calendar'
         ];
         
-        $vendas = new VendasModel();
+        $product_model = new ProductModel();
 
         
-        $products = $vendas->findAll();
+        $products = $product_model->findAll();
        
-        $valorTotalDia = 0;
-        
-        foreach ($products as $venda) {
-            $valorTotalDia += $venda->valor;
-        }
-     
         // Formata os produtos para o FullCalendar
+
         $formattedEvents = [];
         foreach ($products as $product) {
             $formattedEvents[] = [
-                'title' => $valorTotalDia,
+                'title' => $product->name,
                 'start' => $product->created_at, 
                 'end' => $product->created_at// Supondo que a data de criação está armazenada neste campo
                 // Você pode adicionar outros campos do produto, se necessário
             ];
         }
       
-
         // Envia os produtos formatados para a view
         $data['events'] = json_encode($formattedEvents);
 

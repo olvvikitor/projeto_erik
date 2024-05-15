@@ -15,17 +15,7 @@ class VendaTable extends Migration
             'unsigned' => true,
             'auto_increment' => true,
         ],
-        'cart_id' => [
-            'type' => 'INT',
-            'constraint' => 11,
-            'unsigned' => true,
-        ],
         'user_id' => [
-            'type' => 'INT',
-            'constraint' => 11,
-            'unsigned' => true,
-        ],
-        'product_id' => [
             'type' => 'INT',
             'constraint' => 11,
             'unsigned' => true,
@@ -43,12 +33,13 @@ class VendaTable extends Migration
         'created_at' => [
             'type' => 'DATETIME',
         ],
+        'updated_at' => [
+            'type' => 'DATETIME',
+        ],
        ]);
     
        $this->forge->addPrimaryKey('id');
        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
-       $this->forge->addForeignKey('product_id', 'products', 'id', 'CASCADE', 'CASCADE');
-       $this->forge->addForeignKey('cart_id', 'cart', 'id', 'CASCADE', 'CASCADE');
        $this->forge->createTable('vendas');
     }
 

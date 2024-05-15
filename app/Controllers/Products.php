@@ -45,19 +45,6 @@ class Products extends BaseController
     {
         //form validation
         $validation = $this->validate([
-            'file_img' => [
-                'label' => 'Imagem do produto',
-                'rules' => [
-                    'uploaded[file_img]',
-                    'mime_in[file_img,image/png]',
-                    'max_size[file_img,500]',
-                ],
-                'errors' => [
-                    'mime_in' => 'O campo {field} deve ser .png ',
-                    'max_size' => 'O campo {field} deve ter no máximo 500kb',
-                ]
-
-            ],
             'name' => [
                 'label' => 'Nome',
                 'rules' => 'required|max_length[50]|min_length[2]',
@@ -273,6 +260,16 @@ class Products extends BaseController
             return redirect()->back()->withInput()->with('validation_errors', ['name' => 'Já existe um produto com esse nome']);
         } 
         
+        $data_inicial  = $this->request->getPost('data_inicial');
+        $data_final = $this->request->getPost('data_final');
+
+        if($data_inicial > $data_final){
+            return redirect()->back()->withInput()->with('validation_errors', ['data_inicial' => 'A data inicial deve ser anterior a data final', 'data_final'=>'A data final deve ser superior a data inicial']);
+        }
+        $data = [
+            'inicial_promotion_date' => $data_inicial,
+            'final_promotion_date' => $data_final
+        ];
         //preparar para inserir no banco
         $data = [
             'name' => $this->request->getPost('name'),
@@ -293,17 +290,6 @@ class Products extends BaseController
             $data['image'] = $file_img->getName(); 
         }
 
-        $data_inicial  = $this->request->getPost('data_inicial');
-        $data_final = $this->request->getPost('data_final');
-
-        if($data_inicial > $data_final){
-            return redirect()->back()->withInput()->with('validation_errors', ['data_inicial' => 'A data inicial deve ser anterior a data final', 'data_final'=>'A data final deve ser superior a data inicial']);
-        }
-        $data = [
-            'inicial_promotion_date' => $data_inicial,
-            'final_promotion_date' => $data_final
-        ];
-        //update
         $products_model->update($id ,$data);
         return redirect()->to(base_url('/products'));
     }
